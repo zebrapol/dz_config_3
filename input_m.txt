@@ -1,0 +1,25 @@
+var total_tasks = 20
+var completed_tasks = 8
+
+var project = @{
+    project_name = "Web Development"
+    duration_weeks = 12
+    team = (
+        "Alice",
+        "Bob",
+        "Charlie"
+    )
+    tasks = (
+        "Design homepage",
+        "Implement login system",
+        "Create database schema",
+        "Develop user authentication",
+        "Write unit tests"
+    )
+}
+
+var progress = ^completed_tasks / ^total_tasks * 100
+
+var team_progress = @{
+    progress = ^progress
+}

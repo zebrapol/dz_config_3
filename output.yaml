@@ -1,0 +1,25 @@
+- days_in_week: 7
+- schedule:
+    friday:
+      subject: Computer Science
+      teacher: Prof. Black
+      time: '15:00'
+    monday:
+      subject: Mathematics
+      teacher: Prof. Smith
+      time: '9:00'
+    thursday:
+      subject: Chemistry
+      teacher: Dr. Green
+      time: '14:00'
+    tuesday:
+      subject: Physics
+      teacher: Dr. Brown
+      time: '10:00'
+    wednesday:
+      subject: Literature
+      teacher: Mrs. Johnson
+      time: '11:00'
+- total_classes: 35
+- class_schedule:
+    week: 35
