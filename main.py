@@ -52,9 +52,6 @@ class Lexer:
 
     def next_token(self):
         return self.tokens.pop(0) if self.tokens else None
-
-
-
 class Parser:
     def __init__(self, lexer: Lexer):
         self.lexer = lexer
@@ -103,17 +100,21 @@ class Parser:
         raise SyntaxError(f"Неожиданное значение: {token}")
 
     def parse_array(self) -> List[Any]:
-        self.lexer.next_token()
+        self.lexer.next_token()  # Пропускаем '('
         array = []
         while self.lexer.peek() and self.lexer.peek()[0] != "ARRAY_END":
             array.append(self.parse_value())
+            # Пропускаем запятые
             if self.lexer.peek()[0] == "COMMA":
+                self.lexer.next_token()
+            # Игнорируем точку с запятой, если она встречается
+            elif self.lexer.peek()[0] == "SEMICOLON":
                 self.lexer.next_token()
         self.expect("ARRAY_END")
         return array
 
     def parse_dict(self) -> Dict[str, Any]:
-        self.lexer.next_token()
+        self.lexer.next_token()  # Пропускаем '@{'
         dictionary = {}
         while self.lexer.peek() and self.lexer.peek()[0] != "DICT_END":
             key = self.lexer.next_token()
@@ -122,8 +123,12 @@ class Parser:
             self.expect("EQUALS")
             value = self.parse_value()
             dictionary[key[1]] = value
+            # Если после значения идет точка с запятой, пропускаем её
             if self.lexer.peek()[0] == "SEMICOLON":
                 self.lexer.next_token()
+            # Если не встретили точку с запятой, но есть другие токены, ошибка
+            elif self.lexer.peek() and self.lexer.peek()[0] != "DICT_END":
+                raise SyntaxError(f"Ожидалась точка с запятой после пары ключ-значение")
         self.expect("DICT_END")
         return dictionary
 
@@ -134,11 +139,7 @@ class Parser:
             raise SyntaxError(f"Ожидался идентификатор после '^'")
         if identifier[1] not in self.variables:
             raise ValueError(f"Неопределённая переменная: {identifier[1]}")
-
-
         value = self.variables[identifier[1]]
-
-
         token = self.lexer.peek()
         if token and token[0] in ["PLUS", "MINUS", "MULTIPLY", "DIVIDE"]:
             operator = self.lexer.next_token()[0]
